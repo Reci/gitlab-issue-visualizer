@@ -1,0 +1,129 @@
+﻿<html>
+<head>
+    <title>Gitlab task tracker</title>
+    <script src="scripts/jquery-3.1.0.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/site.css" />
+    <script>
+        //configuration
+        var gitlab_api = "http://my.gitlab.server/api/v3/";
+        var private_token = "my_gitlab_private_token";
+
+        var users = null;
+        var projects = null;
+        var issues = null;
+        var current_date = new Date();
+        var firstDayInMonth = new Date(current_date.getFullYear(), current_date.getMonth(), 1);
+        var lastDayInMonth = new Date(current_date.getFullYear(), current_date.getMonth() + 1, 0);
+        var daysInMonth = new Date(current_date.getFullYear(), current_date.getMonth(), 0).getDate();
+        
+
+        function addDateDivs() {
+            for (var dayInMonth = 1; dayInMonth <= daysInMonth ; dayInMonth++)
+            {
+                $('#daysDiv').append(buildDiv("day_"+dayInMonth,"header-days-style",dayInMonth));
+            }
+        }
+
+        function buildDiv(id, cssClass="row", innerHtml="") {
+            var result = '<div id="'+id+'" class="'+cssClass+'">'+innerHtml+"</div>";
+            return result;
+        }
+
+            function buildBar (issue) {
+                var result = "";
+                if (issue.state == "opened") {
+                    if (Date.parse(issue.created_at) >= Date.parse(firstDayInMonth)) {  //created in current month
+
+                        var dayDiff = Math.ceil(Math.abs(Date.parse(issue.due_date) - Date.parse(firstDayInMonth))/(1000 * 3600 * 24));
+                        var marginLeft = (dayDiff * 1.8).toPrecision(4);
+                        if (Date.parse(issue.due_date) <= Date.parse(lastDayInMonth)) { //deadline in current month
+                            var daysLength = Math.ceil(Math.abs(Date.parse(issue.due_date) - Date.parse(issue.created_at))/(1000 * 3600 * 24));
+                            var barLength = (daysLength * 1.8).toPrecision(4);
+                            result = '<div class="label-danger" style="margin-left:'+marginLeft+'%; width:' +barLength+ '%" title="'+issue.title+'">'+issue.title+'</div>';
+                        }
+                        else if (Date.parse(issue.due_date) > Date.parse(lastDayInMonth)) { //deadline in next monthes
+                            var daysLength = Math.ceil(Math.abs(Date.parse(lastDayInMonth) - Date.parse(issue.created_at))/(1000 * 3600 * 24));
+                            var barLength = (daysLength * 1.8).toPrecision(4);
+                            result = '<div class="label-success" style="margin-left:'+marginLeft+'%; width:' +barLength+ '%" title="'+issue.title+'">'+issue.title+'</div>';
+                        }                                   
+                    }
+                    if (Date.parse(issue.due_date) <= Date.parse(firstDayInMonth) || issue.due_date == null)  //deadline in prev months or null
+                    {
+                        if (Date.parse(issue.update_at) <= Date.parse(firstDayInMonth) && issue.state == "closed") {result = "";}
+                        else {
+                            result = '<div class=" row label-info" style="width: 100%" title="'+issue.title+'">'+issue.title+'</div>';
+                        }
+                    }
+                }
+                else if(issue.state == "closed") {
+                    if (Date.parse(issue.updated_at) < Date.parse(firstDayInMonth)) 
+                    {
+                        result = "";
+                    }
+                    else if (Date.parse(issue.updated_at) >= Date.parse(firstDayInMonth))  {
+                        var daysLength = Math.ceil(Math.abs(Date.parse(firstDayInMonth) - Date.parse(issue.updated_at))/(1000 * 3600 * 24));
+                        var barLength = (daysLength * 1.8).toPrecision(4);
+                        result = '<div class="label-warning" style="width:' +barLength+ '%" title="'+issue.title+'">'+issue.title+'</div>';
+                    }
+                }
+                return result;
+            }
+
+            function getIssues(project, page=1){
+                if (page == 0) {return};
+                $.get(gitlab_api + "/projects/"+project.id+"/issues?page="+page+"&private_token=" + private_token, function (data) {
+                    issues = data;
+                    $.each(issues, function (index, issue) {
+                        var userIssuesDiv = "user_"+issue.assignee.id+"_issues";
+                        var due_date = Date.parse(issue.due_date);
+                        var cssClass = due_date <= current_date ? "row text-danger" : undefined;
+                        $('#'+userIssuesDiv).append(buildDiv("issue",cssClass,"["+project.name+"] "+ issue.title));
+                        $('#'+userIssuesDiv).append(buildBar(issue));
+                    })
+                    if (data.length > 0) 
+                    {page++;}
+                    else {page = 0};
+                    getIssues(project, page);
+                });
+            }
+
+        $(document).ready(function() {
+
+            addDateDivs();
+            
+            $.get(gitlab_api + "/users?private_token=" + private_token, function (data) {
+                users = data;
+                $.each(users, function (index, user) {
+                    var userRowDiv = $("#issuesTable").append(buildDiv("userRow_"+user.id));
+                    var userNameDiv = $("#userRow_"+user.id).append(buildDiv("userName_"+user.id,"col-md-2",user.name));
+                    var userIssuesDiv = $("#userRow_"+user.id).append(buildDiv("user_"+user.id+"_issues","col-md-10"));
+                });
+                $.get(gitlab_api + "/projects?private_token=" + private_token, function (data) {
+                    projects = data;
+                    $.each(projects, function (index, project) {
+                        getIssues(project)
+                    });
+                });
+            })
+        });
+
+       
+
+    </script>
+</head>
+<body>
+    <div id="issuesTable">
+        <div id="issuesHeader row">
+            <div class="col-md-2 header-style">Сотрудник</div>
+            <div class="col-md-10 header-style row">
+                <div class="row">День</div>
+                <div class="row" id="daysDiv"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+</body>
+</html>
