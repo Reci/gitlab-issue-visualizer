@@ -34,26 +34,35 @@
                 var result = "";
                 if (issue.state == "opened") {
                     if (Date.parse(issue.created_at) >= Date.parse(firstDayInMonth)) {  //created in current month
-
-                        var dayDiff = Math.ceil(Math.abs(Date.parse(issue.due_date) - Date.parse(firstDayInMonth))/(1000 * 3600 * 24));
-                        var marginLeft = (dayDiff * 1.8).toPrecision(4);
+                        var dayDiff = Math.ceil(Math.abs(Date.parse(issue.created_at) - Date.parse(firstDayInMonth))/(1000 * 3600 * 24));
+                        var marginLeft = (dayDiff * 2.8).toPrecision(4);
+						var cssClass = "";
                         if (Date.parse(issue.due_date) <= Date.parse(lastDayInMonth)) { //deadline in current month
-                            var daysLength = Math.ceil(Math.abs(Date.parse(issue.due_date) - Date.parse(issue.created_at))/(1000 * 3600 * 24));
-                            var barLength = (daysLength * 1.8).toPrecision(4);
-                            result = '<div class="label-danger" style="margin-left:'+marginLeft+'%; width:' +barLength+ '%" title="'+issue.title+'">'+issue.title+'</div>';
+						var daysLength;
+						var barLength ;
+							if (Date.parse(issue.due_date) <= Date.parse(current_date)) {	//overdue
+							cssClass = " bg-danger bordered row" ;
+							daysLength = Math.ceil(Math.abs(Date.parse(current_date) - Date.parse(issue.created_at))/(1000 * 3600 * 24));
+                            barLength = (daysLength * 2.8).toPrecision(4);
+							}
+							else {															//in time
+							cssClass = " bg-warning bordered row ";
+							daysLength = Math.ceil(Math.abs(Date.parse(issue.due_date) - Date.parse(issue.created_at))/(1000 * 3600 * 24));
+                            barLength = (daysLength * 2.8).toPrecision(4);
+							}
+                            result = '<div class="'+cssClass+'" style="margin-left:'+marginLeft+'%; width:' +barLength+ '%" title="'+issue.title+'">'+issue.title+'</div>';
                         }
-                        else if (Date.parse(issue.due_date) > Date.parse(lastDayInMonth)) { //deadline in next monthes
+                        else if (Date.parse(issue.due_date) > Date.parse(lastDayInMonth)) { //deadline in next months
                             var daysLength = Math.ceil(Math.abs(Date.parse(lastDayInMonth) - Date.parse(issue.created_at))/(1000 * 3600 * 24));
-                            var barLength = (daysLength * 1.8).toPrecision(4);
-                            result = '<div class="label-success" style="margin-left:'+marginLeft+'%; width:' +barLength+ '%" title="'+issue.title+'">'+issue.title+'</div>';
+                            var barLength = (daysLength * 2.8).toPrecision(4);
+                            result = '<div class="row bg-success bordered" style="margin-left:'+marginLeft+'%; width:' +barLength+ '%" title="'+issue.title+'">'+issue.title+'</div>';
                         }                                   
                     }
-                    if (Date.parse(issue.due_date) <= Date.parse(firstDayInMonth) || issue.due_date == null)  //deadline in prev months or null
+                    else if (Date.parse(issue.due_date) <= Date.parse(firstDayInMonth) || issue.due_date == null)  //deadline in prev months or null
                     {
-                        if (Date.parse(issue.update_at) <= Date.parse(firstDayInMonth) && issue.state == "closed") {result = "";}
-                        else {
-                            result = '<div class=" row label-info" style="width: 100%" title="'+issue.title+'">'+issue.title+'</div>';
-                        }
+						var dayDiff = Math.ceil(Math.abs(Date.parse(current_date) - Date.parse(firstDayInMonth))/(1000 * 3600 * 24));
+                        var barLength = (dayDiff * 2.8).toPrecision(4);
+                        result = '<div class="row bg-danger row bordered" style="width:' +barLength+ '%" title="'+issue.title+'">'+issue.title+'</div>';
                     }
                 }
                 else if(issue.state == "closed") {
@@ -61,10 +70,17 @@
                     {
                         result = "";
                     }
-                    else if (Date.parse(issue.updated_at) >= Date.parse(firstDayInMonth))  {
+                    else if (Date.parse(issue.created_at) <= Date.parse(firstDayInMonth) && Date.parse(issue.updated_at) >= Date.parse(firstDayInMonth))  {
                         var daysLength = Math.ceil(Math.abs(Date.parse(firstDayInMonth) - Date.parse(issue.updated_at))/(1000 * 3600 * 24));
-                        var barLength = (daysLength * 1.8).toPrecision(4);
-                        result = '<div class="label-warning" style="width:' +barLength+ '%" title="'+issue.title+'">'+issue.title+'</div>';
+                        var barLength = (daysLength * 2.8).toPrecision(4);
+                        result = '<div class="row bg-success bordered" style="width:' +barLength+ '%" title="'+issue.title+'">'+issue.title+'</div>';
+                    }
+					else if (Date.parse(issue.created_at) >= Date.parse(firstDayInMonth) && Date.parse(issue.updated_at) >= Date.parse(firstDayInMonth))  {
+						var dayDiff = Math.ceil(Math.abs(Date.parse(issue.created_at) - Date.parse(firstDayInMonth))/(1000 * 3600 * 24));
+                        var marginLeft = (dayDiff * 2.8).toPrecision(4);
+                        var daysLength = Math.ceil(Math.abs(Date.parse(issue.updated_at) - Date.parse(issue.created_at))/(1000 * 3600 * 24));
+                        var barLength = (daysLength * 2.8).toPrecision(4);
+                        result = '<div class="row bg-success bordered" style="margin-left:'+marginLeft+'%; width:' +barLength+ '%" title="'+issue.title+'">'+issue.title+'</div>';
                     }
                 }
                 return result;
@@ -78,7 +94,7 @@
                         var userIssuesDiv = "user_"+issue.assignee.id+"_issues";
                         var due_date = Date.parse(issue.due_date);
                         var cssClass = due_date <= current_date ? "row text-danger" : undefined;
-                        $('#'+userIssuesDiv).append(buildDiv("issue",cssClass,"["+project.name+"] "+ issue.title));
+                        //$('#'+userIssuesDiv).append(buildDiv("issue",cssClass,"["+project.name+"] "+ issue.title));
                         $('#'+userIssuesDiv).append(buildBar(issue));
                     })
                     if (data.length > 0) 
@@ -95,9 +111,9 @@
             $.get(gitlab_api + "/users?private_token=" + private_token, function (data) {
                 users = data;
                 $.each(users, function (index, user) {
-                    var userRowDiv = $("#issuesTable").append(buildDiv("userRow_"+user.id));
-                    var userNameDiv = $("#userRow_"+user.id).append(buildDiv("userName_"+user.id,"col-md-2",user.name));
-                    var userIssuesDiv = $("#userRow_"+user.id).append(buildDiv("user_"+user.id+"_issues","col-md-10"));
+                    var userRowDiv = $("#issuesBody").append(buildDiv("userRow_"+user.id,"row horizontal-bordered"));
+                    var userNameDiv = $("#userRow_"+user.id).append(buildDiv("userName_"+user.id,"col-md-2 right-bordered employeeNames",user.name));
+                    var userIssuesDiv = $("#userRow_"+user.id).append(buildDiv("user_"+user.id+"_issues","col-md-10 "));
                 });
                 $.get(gitlab_api + "/projects?private_token=" + private_token, function (data) {
                     projects = data;
@@ -114,14 +130,15 @@
 </head>
 <body>
     <div id="issuesTable">
-        <div id="issuesHeader row">
-            <div class="col-md-2 header-style">Сотрудник</div>
+        <div id="issuesHeader" class="navbar navbar-fixed-top vcenter-header">
+            <div class="vcenter col-md-2 header-style">Сотрудник</div>
             <div class="col-md-10 header-style row">
                 <div class="row">День</div>
                 <div class="row" id="daysDiv"></div>
             </div>
         </div>
-
+		<div id="issuesBody">
+		</div>
     </div>
 
 
