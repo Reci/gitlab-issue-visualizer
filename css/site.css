@@ -2,50 +2,7 @@
     height:100%;
 }
 
-.header-style {
-    font-weight: bold;
-    text-align: center;
-}
-
-.header-days-style {
-    float: left;
-    padding-left: 1.8%;
-}
-
-.bordered {
-	border: solid 0.1px grey;
-	border-radius: 5px;
-}
-
-.horizontal-bordered {
-	border-bottom: solid 0.1px lightgrey;
-}
-
-.right-bordered {
-	border-right: solid 0.1px grey;
-}
-
-#issuesHeader {
-	background-color: white;
-	border-bottom: solid 0.1px grey;
-}
-
-#issuesBody {
-	margin-top:50px;
-}
-
-.vcenter {
-	display: flex;
-    align-items: center;
-}
-
-.vcenter-header{
-	display: flex;
-    align-items: center;
-}
-
-.employeeNames {
-	padding-top: 3px;
-	display: table-cell;
-	font-weight: bold;
+#tableIssues > tbody > tr > td,
+#tableIssues > thead > tr > th {
+    border: 1px solid grey;
 }
