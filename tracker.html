@@ -115,9 +115,12 @@
             }
 
             function addIssueRow(user, issue){
+                var project = projects.filter(function (p) {if (p.id == issue.project_id) {return p;}});
+                var web_url = project[0].web_url+"/issues/";
                 if (issue.assignee != null && issue.assignee.id == user.id) {
                     if (!(issue.state == "closed" && Date.parse(issue.updated_at) < Date.parse(firstDayInMonth))) {
-                        var row = String.format("<tr class='user{0}_issue'><td class='rmv'></td><td id='tdIssue_{1}'>{2}</td>",user.id,issue.id,issue.title);
+                        var tdIssue = String.format("<td id='tdIssue_{0}'><a href='{1}'>{2}</a></td>",issue.id,web_url+issue.id,issue.title)
+                        var row = String.format("<tr class='user{0}_issue'><td class='rmv'></td>{1}",user.id,tdIssue);
                         for (var day = 1; day <= daysInMonth; day++) {
                             date = addDays(firstDayInMonth, day);
                             var cssClass = checkDateForIssue(issue, date);
