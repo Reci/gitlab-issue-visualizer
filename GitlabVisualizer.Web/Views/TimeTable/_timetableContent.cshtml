@@ -1,0 +1,41 @@
+﻿@model GitlabVisualizer.Models.TimeTableViewModel
+
+@{ int DaysInMonth = System.DateTime.DaysInMonth(Model.Year, Model.Month); }
+<table class="table table-hover table-stripped tblTimeTable">
+    <thead>
+        <tr>
+            <th>
+                Сотрудник
+            </th>
+            <th>
+                Тикет
+            </th>
+            @for (int day = 1; day <= DaysInMonth; day++)
+            {
+                    <th class="day">
+                        @day
+                    </th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            foreach (var issue in Model.Issues.Where(i => i.Assignee.Id == user.Id))
+            {
+                <tr>
+                    <td>
+                        @user.Name
+                    </td>
+                    <td>
+                        @issue.Title
+                    </td>
+                    @for (int day = 1; day <= DaysInMonth; day++)
+                    {
+                        <td></td>
+                    }
+                </tr>
+            }
+        }
+</tbody>
+</table>

@@ -7,6 +7,7 @@
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+    min-width: 1300px;
 }
 
 /* Override the default bootstrap behavior where horizontal description lists 
@@ -22,3 +23,95 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/*#region Tables*/
+table {
+    border-width: 1px;
+    border-color: #cbcbcb;
+    border-style: solid;
+}
+
+    table th {
+        border-width: 1px;
+        border-color: #cbcbcb;
+        border-style: solid;
+        background-color: #ebebeb;
+        width: 100%;
+        padding: 15px 0px;
+        color: rgba(38, 38, 38, 0.7);
+        font-size: 13.33px;
+        line-height: 19.25px;
+        text-align: center;
+    }
+
+        table th a {
+            color: rgba(38, 38, 38, 0.7);
+            font-size: 13.33px;
+            line-height: 19.25px;
+            text-align: left;
+        }
+
+    table td {
+        border: 1px solid #e0e0e0;
+        color: rgba(38, 38, 38, 0.7);
+        font-size: 13.33px;
+        line-height: 19.25px;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+        .table > tbody > tr > td,
+        .table > tbody > tr > td > *,
+        table td > * {
+            vertical-align: middle;
+        }
+
+    table .filter-panel td {
+        border-width: 1px;
+        border-color: #e1e1e1;
+        border-style: solid;
+        background-color: #fafafa;
+    }
+
+    table .search-box {
+        border-width: 0px;
+        border-color: #e1e1e1;
+        border-style: solid;
+        background-color: #fafafa;
+        width: 100%;
+        height: 100%;
+    }
+
+    table .search-box {
+        outline: none;
+    }
+
+.tblTimeTable {
+    width: 1300px;
+}
+
+.tblTimeTable > thead > tr > th:nth-child(1) {
+   width: 25%;
+}
+.tblTimeTable > thead > tr > th:nth-child(2) {
+   width: 100%;
+}
+
+
+
+.tblTimeTable .day {
+    min-width:25px;
+    padding: 0px;
+    margin: 0px;
+    vertical-align: middle;;
+}
+
+.tblTimeTable tbody tr td {
+    padding: 5px;
+    vertical-align: middle;
+    min-width:7px;
+}
+
+
+                  
+/*#endregion Tables*/
