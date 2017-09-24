@@ -51,7 +51,7 @@ namespace GitlabVisualizer.Web.Controllers
             {
                 issues = issues.Where(i => (i.Assignee != null && i.Assignee.Id == employeeId) 
                 || 
-                (i.Author.Id == employeeId))
+                (i.Assignee == null && i.Author.Id == employeeId))
                 .AsEnumerable();
             }
 

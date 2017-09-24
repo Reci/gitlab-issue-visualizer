@@ -1,5 +1,4 @@
 ﻿body {
-    padding-top: 50px;
     padding-bottom: 20px;
 }
 
@@ -169,5 +168,10 @@ table .day,
 }
 
 .loading {
+    margin-top: 300px;
+    text-align: center;
+}
+
+.header {
     text-align: center;
 }
