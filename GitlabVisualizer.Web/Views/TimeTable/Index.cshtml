@@ -2,25 +2,39 @@
     ViewBag.Title = "Gitlab timetable";
 }
 
-<div class=" col-md-10">
+<div class=" col-md-9">
     <div class="panel panel-default filter-panel">
         <div class="panel-heading">Фильтр</div>
         <div class="panel-body">
-            <label for="employee">Сотрудник</label>
             <select id="employee" class="filter filter-employee form-control"></select>
-            <label for="project">Проект</label>
             <select id="project" class="filter filter-project form-control"></select>
         </div>
     </div>
 </div>
-<div class=" col-md-2">
+<div class=" col-md-3">
     <div class="legend panel panel-default">
         <div class="panel-heading">Легенда</div>
         <div class="panel-body">
             <table>
                 <tr>
-                    <td class="holiday" style="color:red">D</td>
+                    <td class=" day day-deadline"></td>
                     <td>Дедлайн</td>
+                </tr>
+                <tr>
+                    <td class="day day-created"></td>
+                    <td>Дата создания задачи</td>
+                </tr>
+                <tr>
+                    <td class="day day-overdue"></td>
+                    <td>День - задача просрочена</td>
+                </tr>
+                <tr>
+                    <td class="day day-not-overdue"></td>
+                    <td>День - задача не просрочена</td>
+                </tr>
+                <tr>
+                    <td class="day day-closed"></td>
+                    <td>Закрытие задачи</td>
                 </tr>
             </table>
         </div>
