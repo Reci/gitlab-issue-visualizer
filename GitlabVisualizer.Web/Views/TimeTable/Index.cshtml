@@ -1,0 +1,99 @@
+﻿@{
+    ViewBag.Title = "Gitlab timetable";
+}
+
+<div class=" col-md-9">
+    <div class="panel panel-default filter-panel">
+        <div class="panel-heading">Фильтр</div>
+        <div class="panel-body">
+            <select id="employee" class="filter filter-employee form-control"></select>
+            <select id="project" class="filter filter-project form-control"></select>
+        </div>
+    </div>
+</div>
+<div class=" col-md-3">
+    <div class="legend panel panel-default">
+        <div class="panel-heading">Легенда</div>
+        <div class="panel-body">
+            <table>
+                <tr>
+                    <td class=" day day-deadline"></td>
+                    <td>Дедлайн</td>
+                </tr>
+                <tr>
+                    <td class="day day-created"></td>
+                    <td>Дата создания задачи</td>
+                </tr>
+                <tr>
+                    <td class="day day-overdue"></td>
+                    <td>День - задача просрочена</td>
+                </tr>
+                <tr>
+                    <td class="day day-not-overdue"></td>
+                    <td>День - задача не просрочена</td>
+                </tr>
+                <tr>
+                    <td class="day day-closed"></td>
+                    <td>Закрытие задачи</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="loading">
+    <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+</div>
+<div id="updatable">
+
+</div>
+
+
+@section Scripts {
+    <script src="~/Scripts/gitlab-visualizer.js"></script>
+
+    <script>
+
+
+
+        $(document).ready(function () {
+            fillUsersDdl();
+            fillProjectsDdl();
+            updateTimeTableContent();
+        });
+
+        $(".filter-employee").on("change", function () {
+            updateTimeTableContent();
+        });
+
+
+        $(".filter-project").on("change", function () {
+            updateTimeTableContent();
+        });
+
+        function updateTimeTableContent(param) {
+            $("#updatable").empty();
+            $(".loading").show();
+        if (param == null) {
+            param = {
+                employeeId: $(".filter-employee").val() || -1,
+                projectId: $(".filter-project").val() || -1
+            };
+        };
+
+        $.ajax({
+            url: '@Url.Action("GetTimeTableContent")',
+            type: 'POST',
+            data: JSON.stringify(param),
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                $(".loading").hide();
+                $('#updatable').html(data);
+
+            }
+        });
+    }
+
+
+    </script>
+}

@@ -1,0 +1,58 @@
+﻿@model GitlabVisualizer.Models.TimeTableViewModel
+
+@{ int DaysInMonth = System.DateTime.DaysInMonth(Model.Year, Model.Month); }
+<table class="table table-hover table-stripped tblTimeTable">
+    <thead>
+        <tr>
+            <th>
+                Сотрудник
+            </th>
+            <th>
+                Тикет
+            </th>
+            @for (int day = 1; day <= DaysInMonth; day++)
+            {
+                    <th class="day">
+                        @day
+                    </th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            foreach (var issue in Model.Issues.Where(i => (i.Assignee != null && i.Assignee.Id == user.Id) || (i.Assignee == null && i.Author.Id == user.Id ))) //if assignee is null, tie to author
+            {
+                <tr>
+                    <td>
+                        @user.Name
+                    </td>
+                    <td>
+                        @issue.Title
+                    </td>
+                    @for (int day = 1; day <= DaysInMonth; day++)
+                    {
+
+                        var checkingDate = new DateTime(year: Model.Year, month: Model.Month, day: day);
+                        DateTime deadline = issue.DueDate != null ? (DateTime)issue.DueDate : new DateTime(Model.Year, Model.Month+1, 1);
+                        string cssClass = "";
+                        if (checkingDate == issue.CreatedAt.Date) { cssClass += " day-created "; } //deadline
+                        if (checkingDate == deadline) { cssClass += " day-deadline "; } //deadline
+                        if (checkingDate == issue.CloseDate) { cssClass += " day-closed "; } //issue closed day
+                        if (checkingDate > issue.CreatedAt.Date && (
+                            checkingDate <= deadline && checkingDate <= DateTime.Now.Date
+                            && (issue.CloseDate == null || checkingDate <= issue.CloseDate)))
+                        { cssClass += " day-not-overdue "; } //not overdue
+                        else if (checkingDate > deadline
+                            && checkingDate <= DateTime.Now.Date
+                            && (issue.CloseDate == null || checkingDate <= issue.CloseDate))
+                        { cssClass += " day-overdue "; }
+
+                        <td  class="@cssClass">
+                        </td>
+                            }
+                </tr>
+            }
+        }
+</tbody>
+</table>
