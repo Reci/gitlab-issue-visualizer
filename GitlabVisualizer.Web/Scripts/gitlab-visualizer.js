@@ -3,7 +3,7 @@ function fillUsersDdl() {
     $('#employee').append($('<option>', {
         selected: "selected",
         value: -1,
-        text: "Все"
+        text: "Все сотрудники"
     }));
     $.get("/TimeTable/GetUsers", function (users) {
         $.each(users, function (i, user) {
@@ -24,7 +24,7 @@ function fillProjectsDdl() {
     $('#project').append($('<option>', {
         selected: "selected",
         value: -1,
-        text: "Все"
+        text: "Все проекты"
     }));
     $.get("/TimeTable/GetProjects", function (projects) {
         $.each(projects, function (i, project) {

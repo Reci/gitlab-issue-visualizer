@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,21 +9,30 @@ namespace GitlabVisualizer.Models
 {
     public class Project
     {
-        public const string Url = "/projects";
-        public string HttpUrl;
-        public string SshUrl;
-        public DateTime CreatedAt;
-        public bool WikiEnabled;
-        public bool WallEnabled;
-        public bool MergeRequestsEnabled;
-        public bool IssuesEnabled;
-        public string PathWithNamespace;
-        public string Path;
-        public bool Public;
-        public User Owner;
-        public string DefaultBranch;
-        public string Description;
-        public string Name;
         public int Id;
+        public string Description;
+        [JsonProperty(PropertyName = "default_branch")]
+        public string DefaultBranch;
+        [JsonProperty(PropertyName = "tag_list")]
+        string[] TagList;
+        public bool Public;
+        public bool Archived;
+        [JsonProperty(PropertyName = "visibility_level")]
+        public int VisibilityLevel;
+        [JsonProperty(PropertyName = "http_url_to_repo")]
+        public string HttpUrlToRepo;
+        [JsonProperty(PropertyName = "ssh_url_to_repo")]
+        public string SshUrlToRepo;
+        [JsonProperty(PropertyName = "web_url")]
+        public string WebUrl;
+        public string Name;
+        [JsonProperty(PropertyName = "name_with_namespace")]
+        public string NameWithNamespace;
+        public string Path;
+        [JsonProperty(PropertyName = "path_with_namespace")]
+        public string PathWithNamespace;
+        [JsonProperty(PropertyName = "created_at")]
+        public DateTime CreatedAt;
+        //...
     }
 }

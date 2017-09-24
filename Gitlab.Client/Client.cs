@@ -14,6 +14,7 @@ namespace GitlabVisualizer.ApiClient
     {
         string endpoint = System.Configuration.ConfigurationManager.AppSettings["GitlabApiEndpoint"];
         string privateToken = System.Configuration.ConfigurationManager.AppSettings["GitlabApiPrivateToken"];
+        int maxItems = 1000; //max items on page
         GitLabClient client;
 
         public Client()
@@ -31,7 +32,7 @@ namespace GitlabVisualizer.ApiClient
             using (var client = new WebClient())
             {
                 client.Encoding = Encoding.UTF8;
-                var json = client.DownloadString($"{endpoint}/users?private_token={privateToken}");
+                var json = client.DownloadString($"{endpoint}/users?per_page={maxItems}&private_token={privateToken}");
                 IEnumerable<User> result = JsonConvert.DeserializeObject<List<User>>(json);
                 return result;
             }
@@ -42,7 +43,7 @@ namespace GitlabVisualizer.ApiClient
             using (var client = new WebClient())
             {
                 client.Encoding = Encoding.UTF8;
-                var json = client.DownloadString($"{endpoint}/projects?private_token={privateToken}");
+                var json = client.DownloadString($"{endpoint}/projects?per_page={maxItems}&private_token={privateToken}");
                 IEnumerable<Project> result = JsonConvert.DeserializeObject<List<Project>>(json);
                 return result;
             }
@@ -57,7 +58,7 @@ namespace GitlabVisualizer.ApiClient
                 client.Encoding = Encoding.UTF8;
                 foreach (var project in projects)
                 {
-                    var json = client.DownloadString($"{endpoint}/projects/{project.Id}/issues?private_token={privateToken}");
+                    var json = client.DownloadString($"{endpoint}/projects/{project.Id}/issues?per_page={maxItems}&private_token={privateToken}");
                     result.AddRange(JsonConvert.DeserializeObject<List<Issue>>(json));
                 }
             }
@@ -69,7 +70,7 @@ namespace GitlabVisualizer.ApiClient
             using (var client = new WebClient())
             {
                 client.Encoding = Encoding.UTF8;
-                var json = client.DownloadString($"{endpoint}/projects/{projectId}/issues?private_token={privateToken}");
+                var json = client.DownloadString($"{endpoint}/projects/{projectId}/issues?per_page={maxItems}&private_token={privateToken}");
                 IEnumerable<Issue> result = JsonConvert.DeserializeObject<List<Issue>>(json);
                 return result;
             }

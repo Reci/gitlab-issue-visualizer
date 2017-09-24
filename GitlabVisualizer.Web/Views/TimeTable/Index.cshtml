@@ -1,33 +1,62 @@
 ﻿@{
     ViewBag.Title = "Gitlab timetable";
 }
-
-<div class=" col-md-10">
-    <div class="panel panel-default filter-panel">
+<h3 class="header">Задачи по проектам (@DateTime.Now.ToString("MMMM yyyy"))</h3>
+<div class=" col-md-9">
+    <div class="panel panel-default">
         <div class="panel-heading">Фильтр</div>
         <div class="panel-body">
-            <label for="employee">Сотрудник</label>
-            <select id="employee" class="filter filter-employee form-control"></select>
-            <label for="project">Проект</label>
-            <select id="project" class="filter filter-project form-control"></select>
+            <div class="filter-panel">
+                <select id="employee" class="filter filter-employee form-control"></select>
+                <select id="project" class="filter filter-project form-control"></select>
+            </div>
+            <div class="counts-panel">
+                <div class="col-md-3">Всего задач: <span class="totalTicketsCount">0</span></div>
+                <div class="col-md-3">Открытых задач: <span class="openTicketsCount">0</span></div>
+                <div class="col-md-3">Закрытых задач: <span class="text-success closedTicketsCount">0</span></div>
+                <div class="col-md-3">Просроченных задач: <span class="text-danger overdueTicketsCount">0</span></div>
+            </div>
         </div>
+        
     </div>
+    
 </div>
-<div class=" col-md-2">
+<div class=" col-md-3">
     <div class="legend panel panel-default">
         <div class="panel-heading">Легенда</div>
         <div class="panel-body">
             <table>
                 <tr>
-                    <td class="holiday" style="color:red">D</td>
+                    <td class="day day-created"></td>
+                    <td>Создание задачи</td>
+                </tr>
+                <tr>
+                    <td class=" day day-deadline"></td>
                     <td>Дедлайн</td>
                 </tr>
+                <tr>
+                    <td class="day day-closed"></td>
+                    <td>Закрытие задачи</td>
+                </tr>
+                <tr>
+                    <td class="day day-overdue"></td>
+                    <td>Задача просрочена</td>
+                </tr>
+                <tr>
+                    <td class="day day-not-overdue"></td>
+                    <td>Задача выполнялась по графику</td>
+                </tr>
+
             </table>
         </div>
     </div>
 </div>
+<div class="loading">
+    <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+</div>
 <div id="updatable">
-    @Html.Action("GetTimetableContent")
+
 </div>
 
 
@@ -39,27 +68,42 @@
 
 
         $(document).ready(function () {
-
             fillUsersDdl();
             fillProjectsDdl();
-            //addDateDivs();
-
-            //$.get(gitlab_api + "/users?private_token=" + private_token, function (data) {
-            //    users = data;
-            //    $.each(users, function (index, user) {
-            //        var userRowDiv = $("#issuesBody").append(buildDiv("userRow_"+user.id,"row horizontal-bordered"));
-            //        var userNameDiv = $("#userRow_"+user.id).append(buildDiv("userName_"+user.id,"col-md-2 right-bordered employeeNames",user.name));
-            //        var userIssuesDiv = $("#userRow_"+user.id).append(buildDiv("user_"+user.id+"_issues","col-md-10 "));
-            //    });
-            //    $.get(gitlab_api + "/projects?private_token=" + private_token, function (data) {
-            //        projects = data;
-            //        $.each(projects, function (index, project) {
-            //            getIssues(project)
-            //        });
-            //    });
-            //})
+            updateTimeTableContent();
         });
 
+        $(".filter-employee").on("change", function () {
+            updateTimeTableContent();
+        });
+
+
+        $(".filter-project").on("change", function () {
+            updateTimeTableContent();
+        });
+
+        function updateTimeTableContent(param) {
+            $("#updatable").empty();
+            $(".loading").show();
+        if (param == null) {
+            param = {
+                employeeId: $(".filter-employee").val() || -1,
+                projectId: $(".filter-project").val() || -1
+            };
+        };
+
+        $.ajax({
+            url: '@Url.Action("GetTimeTableContent")',
+            type: 'POST',
+            data: JSON.stringify(param),
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                $(".loading").hide();
+                $('#updatable').html(data);
+
+            }
+        });
+    }
 
 
     </script>

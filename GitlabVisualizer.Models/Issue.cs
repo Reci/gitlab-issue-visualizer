@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,8 @@ namespace GitlabVisualizer.Models
     public class Issue
     {
         public int Id;
-        public int IssueId;
+        public int IId; //issue Id
+        [JsonProperty(PropertyName = "project_id")]
         public int ProjectId;
         public string Title;
         public string Description;
@@ -17,8 +19,17 @@ namespace GitlabVisualizer.Models
         public Milestone Milestone;
         public Assignee Assignee;
         public Author Author;
+        [JsonProperty(PropertyName = "user_notes_count")]
+        public int UserNotesCount;
         public string State;
+        [JsonProperty(PropertyName = "created_at")]
         public DateTime CreatedAt;
+        [JsonProperty(PropertyName = "updated_at")]
         public DateTime UpdatedAt;
+        [JsonProperty(PropertyName = "due_date")]
+        public DateTime? DueDate;
+        public int Upvotes;
+        public int Downvotes;
+        public DateTime? CloseDate;
     }
 }

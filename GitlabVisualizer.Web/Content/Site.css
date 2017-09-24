@@ -1,5 +1,4 @@
 ﻿body {
-    padding-top: 50px;
     padding-bottom: 20px;
 }
 
@@ -98,7 +97,7 @@ table {
 }
 
 
-
+table .day,
 .tblTimeTable .day {
     min-width:25px;
     padding: 0px;
@@ -112,6 +111,71 @@ table {
     min-width:7px;
 }
 
-
+.legend table td {
+    padding: 2px 5px;
+    vertical-align: middle;
+    min-width:7px;
+}
                   
 /*#endregion Tables*/
+
+.day-overdue {
+    background-color: #fd7e7e;
+}
+
+.day-not-overdue {
+    background-color: #70e270;
+}
+
+.day-deadline:before {
+    color: black;
+    content: "D";
+    vertical-align: middle;
+    margin-left: 2px;
+    font-weight: bold;
+}
+
+.day-closed:before {
+    vertical-align: middle;
+    margin-left: 2px;
+    font-weight: bold;
+    color: black;
+    content: "X";
+}
+
+
+.day-created:before {
+    vertical-align: middle;
+    margin-left: 2px;
+    font-weight: bold;
+    color: black;
+    content: "S";
+}
+
+
+.filter-panel {
+    display: flex;
+    display: -webkit-flex; /* Safari 8 */
+    flex-wrap: wrap;
+    -webkit-flex-wrap: wrap; /* Safari 8 */
+    justify-content: center;
+    -webkit-justify-content: center; /* Safari 8 */
+}
+
+.filter-panel .filter {
+    text-align: center;
+    margin: 0px 7px;
+}
+
+.counts-panel {
+    margin: 10px 0px;
+}
+
+.loading {
+    margin-top: 300px;
+    text-align: center;
+}
+
+.header {
+    text-align: center;
+}

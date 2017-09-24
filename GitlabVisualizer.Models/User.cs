@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,46 +9,13 @@ namespace GitlabVisualizer.Models
 {
     public class User
     {
-        public static string Url;        
-
-        public bool CanCreateGroup;
-
-        public bool IsAdmin;
-
-        public string WebsiteURL;
-
-        public string ExternUid;
-
-        public int ThemeId;
-     
-        public int ColorSchemeId;
-    
-        public string Bio;
-        
-        public string AvatarURL;
-        
-        public DateTime CreatedAt;
-        
-        public bool Blocked;
-        
-        public string State;
-        
-        public string Provider;
-        
-        public string Twitter;
-        
-        public string Linkedin;
-        
-        public string Skype;
-        
-        public string Name;
-        
-        public string Email;
-        
-        public string Username;
-        
         public int Id;
-        
-        public bool CanCreateProject;
+        public string Name;
+        public string Username;
+        public string State;
+        [JsonProperty(PropertyName = "avatar_url")]
+        public string AvatarUrl;
+        [JsonProperty(PropertyName = "web_url")]
+        public string WebUrl;
     }
 }

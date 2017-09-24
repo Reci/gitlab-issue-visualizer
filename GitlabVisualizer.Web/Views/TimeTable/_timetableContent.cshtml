@@ -21,7 +21,7 @@
     <tbody>
         @foreach (var user in Model.Users)
         {
-            foreach (var issue in Model.Issues.Where(i => i.Assignee.Id == user.Id))
+            foreach (var issue in Model.Issues.Where(i => (i.Assignee != null && i.Assignee.Id == user.Id) || (i.Assignee == null && i.Author.Id == user.Id ))) //if assignee is null, tie to author
             {
                 <tr>
                     <td>
@@ -32,10 +32,37 @@
                     </td>
                     @for (int day = 1; day <= DaysInMonth; day++)
                     {
-                        <td></td>
-                    }
+
+                        var checkingDate = new DateTime(year: Model.Year, month: Model.Month, day: day);
+                        DateTime deadline = issue.DueDate != null ? (DateTime)issue.DueDate : new DateTime(Model.Year, Model.Month+1, 1);
+                        string cssClass = "";
+                        if (checkingDate == issue.CreatedAt.Date) { cssClass += " day-created "; } //deadline
+                        if (checkingDate == deadline) { cssClass += " day-deadline "; } //deadline
+                        if (checkingDate == issue.CloseDate) { cssClass += " day-closed "; } //issue closed day
+                        if (checkingDate > issue.CreatedAt.Date && (
+                            checkingDate <= deadline && checkingDate <= DateTime.Now.Date
+                            && (issue.CloseDate == null || checkingDate <= issue.CloseDate)))
+                        { cssClass += " day-not-overdue "; } //not overdue
+                        else if (checkingDate > deadline
+                            && checkingDate <= DateTime.Now.Date
+                            && (issue.CloseDate == null || checkingDate <= issue.CloseDate))
+                        { cssClass += " day-overdue "; }
+
+                        <td  class="@cssClass">
+                        </td>
+                            }
                 </tr>
             }
         }
 </tbody>
 </table>
+
+<script>
+    $(document).ready(function () {
+        $(".totalTicketsCount").text(@Model.Issues.Count());
+        $(".openTicketsCount").text(@Model.Issues.Count(i => i.State == "opened" || i.State == "reopened"));
+        $(".closedTicketsCount").text(@Model.Issues.Count(i => i.State == "closed"));
+        $(".overdueTicketsCount").text(@Model.Issues.Count(i => (i.CloseDate == null && (i.DueDate != null && i.DueDate < DateTime.Now.Date) ||
+                                  (i.CloseDate != null && i.DueDate != null && i.CloseDate > i.DueDate))) )
+    });
+</script>
