@@ -56,3 +56,13 @@
         }
 </tbody>
 </table>
+
+<script>
+    $(document).ready(function () {
+        $(".totalTicketsCount").text(@Model.Issues.Count());
+        $(".openTicketsCount").text(@Model.Issues.Count(i => i.State == "opened" || i.State == "reopened"));
+        $(".closedTicketsCount").text(@Model.Issues.Count(i => i.State == "closed"));
+        $(".overdueTicketsCount").text(@Model.Issues.Count(i => (i.CloseDate == null && (i.DueDate != null && i.DueDate < DateTime.Now.Date) ||
+                                  (i.CloseDate != null && i.DueDate != null && i.CloseDate > i.DueDate))) )
+    });
+</script>

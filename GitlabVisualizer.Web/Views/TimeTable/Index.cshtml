@@ -3,13 +3,23 @@
 }
 <h3 class="header">Задачи по проектам (@DateTime.Now.ToString("MMMM yyyy"))</h3>
 <div class=" col-md-9">
-    <div class="panel panel-default filter-panel">
+    <div class="panel panel-default">
         <div class="panel-heading">Фильтр</div>
         <div class="panel-body">
-            <select id="employee" class="filter filter-employee form-control"></select>
-            <select id="project" class="filter filter-project form-control"></select>
+            <div class="filter-panel">
+                <select id="employee" class="filter filter-employee form-control"></select>
+                <select id="project" class="filter filter-project form-control"></select>
+            </div>
+            <div class="counts-panel">
+                <div class="col-md-3">Всего задач: <span class="totalTicketsCount">0</span></div>
+                <div class="col-md-3">Открытых задач: <span class="openTicketsCount">0</span></div>
+                <div class="col-md-3">Закрытых задач: <span class="text-success closedTicketsCount">0</span></div>
+                <div class="col-md-3">Просроченных задач: <span class="text-danger overdueTicketsCount">0</span></div>
+            </div>
         </div>
+        
     </div>
+    
 </div>
 <div class=" col-md-3">
     <div class="legend panel panel-default">
@@ -17,25 +27,26 @@
         <div class="panel-body">
             <table>
                 <tr>
+                    <td class="day day-created"></td>
+                    <td>Создание задачи</td>
+                </tr>
+                <tr>
                     <td class=" day day-deadline"></td>
                     <td>Дедлайн</td>
-                </tr>
-                <tr>
-                    <td class="day day-created"></td>
-                    <td>Дата создания задачи</td>
-                </tr>
-                <tr>
-                    <td class="day day-overdue"></td>
-                    <td>День - задача просрочена</td>
-                </tr>
-                <tr>
-                    <td class="day day-not-overdue"></td>
-                    <td>День - задача не просрочена</td>
                 </tr>
                 <tr>
                     <td class="day day-closed"></td>
                     <td>Закрытие задачи</td>
                 </tr>
+                <tr>
+                    <td class="day day-overdue"></td>
+                    <td>Задача просрочена</td>
+                </tr>
+                <tr>
+                    <td class="day day-not-overdue"></td>
+                    <td>Задача выполнялась по графику</td>
+                </tr>
+
             </table>
         </div>
     </div>
