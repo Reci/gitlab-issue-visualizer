@@ -40,8 +40,12 @@
         </div>
     </div>
 </div>
+<div class="loading">
+    <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+</div>
 <div id="updatable">
-    @Html.Action("GetTimetableContent")
+
 </div>
 
 
@@ -53,27 +57,42 @@
 
 
         $(document).ready(function () {
-
             fillUsersDdl();
             fillProjectsDdl();
-            //addDateDivs();
-
-            //$.get(gitlab_api + "/users?private_token=" + private_token, function (data) {
-            //    users = data;
-            //    $.each(users, function (index, user) {
-            //        var userRowDiv = $("#issuesBody").append(buildDiv("userRow_"+user.id,"row horizontal-bordered"));
-            //        var userNameDiv = $("#userRow_"+user.id).append(buildDiv("userName_"+user.id,"col-md-2 right-bordered employeeNames",user.name));
-            //        var userIssuesDiv = $("#userRow_"+user.id).append(buildDiv("user_"+user.id+"_issues","col-md-10 "));
-            //    });
-            //    $.get(gitlab_api + "/projects?private_token=" + private_token, function (data) {
-            //        projects = data;
-            //        $.each(projects, function (index, project) {
-            //            getIssues(project)
-            //        });
-            //    });
-            //})
+            updateTimeTableContent();
         });
 
+        $(".filter-employee").on("change", function () {
+            updateTimeTableContent();
+        });
+
+
+        $(".filter-project").on("change", function () {
+            updateTimeTableContent();
+        });
+
+        function updateTimeTableContent(param) {
+            $("#updatable").empty();
+            $(".loading").show();
+        if (param == null) {
+            param = {
+                employeeId: $(".filter-employee").val() || -1,
+                projectId: $(".filter-project").val() || -1
+            };
+        };
+
+        $.ajax({
+            url: '@Url.Action("GetTimeTableContent")',
+            type: 'POST',
+            data: JSON.stringify(param),
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                $(".loading").hide();
+                $('#updatable').html(data);
+
+            }
+        });
+    }
 
 
     </script>

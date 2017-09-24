@@ -43,6 +43,18 @@ namespace GitlabVisualizer.Web.Controllers
             model.Users = client.GetUsers();
             model.Projects = client.GetProjects();
             var issues = client.GetIssues();
+            if (projectId != null && projectId != -1)
+            {
+                issues = issues.Where(i => i.ProjectId == projectId);
+            }
+            if (employeeId != null && employeeId != -1)
+            {
+                issues = issues.Where(i => (i.Assignee != null && i.Assignee.Id == employeeId) 
+                || 
+                (i.Author.Id == employeeId))
+                .AsEnumerable();
+            }
+
             foreach (var issue in issues)
             {
                 if (issue.State == "closed") {

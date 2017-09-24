@@ -167,3 +167,7 @@ table .day,
     text-align: center;
     margin: 0px 7px;
 }
+
+.loading {
+    text-align: center;
+}
